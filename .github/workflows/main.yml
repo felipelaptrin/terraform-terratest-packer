@@ -12,3 +12,40 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.1
+          terraform_wrapper: false
+      
+      - name: Setup Go 
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.18
+        
+      - name: Install Go dependencies
+        working-directory: tests
+        run: |
+          go mod init tests 
+          go mod tidy
+
+      - name: Run Terratest tests
+        working-directory: tests
+        run: go test
+
+      - name: Automatically create a Markdown docs for Terraform
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-dir: infrastructure
+          output-method: replace
+          git-push: "true"
