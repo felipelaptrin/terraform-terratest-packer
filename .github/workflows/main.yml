@@ -49,7 +49,8 @@ jobs:
         with:
           command: build
           arguments: "-color=false -on-error=abort"
-          target: ./ami/static.pkr.hcl
+          working_directory: ami
+          target: ./static.pkr.hcl
 
       - name: Setup Go 
         uses: actions/setup-go@v1
