@@ -6,3 +6,13 @@ data "aws_availability_zones" "this" {
   }
 
 }
+
+data "aws_ami" "static_webapp" {
+  most_recent = true
+  owners      = ["self"]
+
+  filter {
+    name   = "name"
+    values = ["basic-static-file-*"]
+  }
+}
