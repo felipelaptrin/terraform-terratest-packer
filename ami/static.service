@@ -1,0 +1,15 @@
+[Unit]
+Description=Static Webapp
+
+[Service]
+WorkingDirectory=/home/ubuntu
+ExecStart=/home/ubuntu/venv/bin/python /home/ubuntu/static_webapp/main.py
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=static-webapp
+User=ubuntu
+
+[Install]
+WantedBy=default.target
