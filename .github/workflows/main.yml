@@ -28,6 +28,30 @@ jobs:
           terraform_version: 1.2.1
           terraform_wrapper: false
       
+      - name: Build static-webapp
+        run: zip -r static_webapp.zip static_webapp
+
+      - name: Initialize Packer Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: init 
+          target: ./ami/static.pkr.hcl
+      
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: ./ami/static.pkr.hcl
+
+      - name: Build Artifact
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-color=false -on-error=abort"
+          working_directory: ami
+          target: ./static.pkr.hcl
+
       - name: Setup Go 
         uses: actions/setup-go@v1
         with:
